@@ -1,0 +1,910 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+
+// ============================================================
+//  ZBIÓR ALGORYTMÓW – C# Console Application
+//  Kategorie: Matematyka, Tablice, Sortowania, Wyszukiwanie,
+//             Grafy, Stringi, Rekurencja i Kombinatoryka
+// ============================================================
+
+class Algorytmy
+{
+    static void Main(string[] args)
+    {
+        Console.OutputEncoding = Encoding.UTF8;
+
+        // ── 1. MATEMATYCZNE / LICZBY ──────────────────────────────────
+        Console.WriteLine("=== 1. MATEMATYCZNE / LICZBY ===\n");
+
+        // 1.1 Silnia – iteracja i rekurencja
+        // Złożoność: O(n)
+        Console.WriteLine("1.1 Silnia 5:");
+        Console.WriteLine($"  Iteracja:  {SilniaIteracja(5)}");    // 120
+        Console.WriteLine($"  Rekurencja:{SilniaRekurencja(5)}");  // 120
+
+        // 1.2 NWD (algorytm Euklidesa)
+        // Złożoność: O(log min(a,b))
+        Console.WriteLine("\n1.2 NWD(48, 18) = " + NWD(48, 18));   // 6
+
+        // 1.3 NWW
+        // Złożoność: O(log min(a,b))
+        Console.WriteLine("1.3 NWW(4, 6)   = " + NWW(4, 6));       // 12
+
+        // 1.4 Liczba pierwsza
+        // Złożoność: O(sqrt(n))
+        Console.WriteLine("1.4 CzyPierwsza(17) = " + CzyPierwsza(17));  // True
+        Console.WriteLine("    CzyPierwsza(18) = " + CzyPierwsza(18));  // False
+
+        // 1.5 Fibonacci do n – iteracja i rekurencja
+        // Iteracja: O(n) | Rekurencja: O(2^n)
+        Console.WriteLine("\n1.5 Fibonacci do 10:");
+        Console.WriteLine("  Iteracja:  " + string.Join(", ", FibonacciIteracja(10)));
+        Console.WriteLine("  Rekurencja (n-ty): fib(7)=" + FibonacciRekurencja(7));
+
+        // 1.6 Suma cyfr liczby
+        // Złożoność: O(log n) – liczba cyfr
+        Console.WriteLine("\n1.6 SumaCyfr(1234) = " + SumaCyfr(1234));   // 10
+
+        // 1.7 Suma liczb parzystych od 1 do n
+        // Złożoność: O(n)
+        Console.WriteLine("1.7 SumaParzyste(10) = " + SumaParzystych(10)); // 30
+
+        // 1.8 Liczba doskonała
+        // Złożoność: O(n)
+        Console.WriteLine("1.8 CzyDoskonala(28) = " + CzyDoskonala(28));  // True
+        Console.WriteLine("    CzyDoskonala(12) = " + CzyDoskonala(12));  // False
+
+        // 1.9 Rozkład na czynniki pierwsze
+        // Złożoność: O(sqrt(n))
+        Console.WriteLine("\n1.9 CzynnikiPierwsze(60): " +
+            string.Join(", ", CzynnikiPierwsze(60)));   // 2, 2, 3, 5
+
+        // 1.10 Liczba Armstronga
+        // Złożoność: O(d) – liczba cyfr
+        Console.WriteLine("1.10 CzyArmstrong(153) = " + CzyArmstrong(153)); // True
+        Console.WriteLine("     CzyArmstrong(100) = " + CzyArmstrong(100)); // False
+
+        // ── 2. TABLICE ────────────────────────────────────────────────
+        Console.WriteLine("\n=== 2. TABLICE ===\n");
+        int[] arr = { 3, 1, 4, 1, 5, 9, 2, 6, 5, 3 };
+        Console.WriteLine("Tablica: " + string.Join(", ", arr));
+
+        // 2.1 Min i Max
+        // Złożoność: O(n)
+        (int min, int max) = MinMax(arr);
+        Console.WriteLine($"2.1 Min={min}, Max={max}");             // 1, 9
+
+        // 2.2 Suma elementów
+        // Złożoność: O(n)
+        Console.WriteLine("2.2 Suma = " + SumaTablicy(arr));        // 39
+
+        // 2.3 Średnia
+        // Złożoność: O(n)
+        Console.WriteLine("2.3 Średnia = " + SredniaTablicy(arr));  // 3.9
+
+        // 2.4 Odwróć tablicę
+        // Złożoność: O(n)
+        int[] rev = OdwrocTablice((int[])arr.Clone());
+        Console.WriteLine("2.4 Odwrócona: " + string.Join(", ", rev));
+
+        // 2.5 Liczba wystąpień
+        // Złożoność: O(n)
+        Console.WriteLine("2.5 Wystąpienia 5: " + LiczbaWystapien(arr, 5)); // 2
+
+        // 2.6 Obrót o k pozycji
+        // Złożoność: O(n)
+        int[] rotated = ObroTablice((int[])arr.Clone(), 3, lewo: true);
+        Console.WriteLine("2.6 Obrót 3 w lewo: " + string.Join(", ", rotated));
+
+        // 2.7 Monotoniczna
+        // Złożoność: O(n)
+        int[] mono = { 1, 2, 3, 4, 5 };
+        Console.WriteLine("2.7 CzyMonotoniczna({1,2,3,4,5}) = " + CzyMonotoniczna(mono));
+
+        // 2.8 Zsumuj pary
+        // Złożoność: O(n)
+        int[] pairs = { 1, 2, 3, 4, 5, 6 };
+        Console.WriteLine("2.8 SumyPar: " + string.Join(", ", ZsumujPary(pairs))); // 3,7,11
+
+        // 2.9 Parzyste i nieparzyste
+        // Złożoność: O(n)
+        var (parzyste, nieparzyste) = WydzielParzyste(arr);
+        Console.WriteLine("2.9 Parzyste:    " + string.Join(", ", parzyste));
+        Console.WriteLine("    Nieparzyste: " + string.Join(", ", nieparzyste));
+
+        // 2.10 Powtarzające się elementy
+        // O(n²) lub O(n) z HashSet
+        Console.WriteLine("2.10 CzyMaPowtorzenia (O(n²)): " + CzyMaPowtorzeniaN2(arr));
+        Console.WriteLine("     CzyMaPowtorzenia (O(n) HashSet): " + CzyMaPowtorzeniaHashSet(arr));
+
+        // ── 3. SORTOWANIA ─────────────────────────────────────────────
+        Console.WriteLine("\n=== 3. SORTOWANIA ===\n");
+        int[] sortArr = { 64, 25, 12, 22, 11 };
+        Console.WriteLine("Wejście: " + string.Join(", ", sortArr));
+
+        // 3.1 Bubble Sort
+        // Best: O(n) | Worst: O(n²)
+        int[] bs = (int[])sortArr.Clone(); BubbleSort(bs);
+        Console.WriteLine("3.1 BubbleSort:    " + string.Join(", ", bs));
+
+        // 3.2 Insertion Sort
+        // Best: O(n) | Worst: O(n²)
+        int[] ins = (int[])sortArr.Clone(); InsertionSort(ins);
+        Console.WriteLine("3.2 InsertionSort: " + string.Join(", ", ins));
+
+        // 3.3 Selection Sort
+        // Best/Worst: O(n²)
+        int[] sel = (int[])sortArr.Clone(); SelectionSort(sel);
+        Console.WriteLine("3.3 SelectionSort: " + string.Join(", ", sel));
+
+        // 3.4 MergeSort
+        // Best/Worst: O(n log n)
+        int[] ms = (int[])sortArr.Clone(); MergeSort(ms, 0, ms.Length - 1);
+        Console.WriteLine("3.4 MergeSort:     " + string.Join(", ", ms));
+
+        // 3.5 QuickSort
+        // Best/Avg: O(n log n) | Worst: O(n²)
+        int[] qs = (int[])sortArr.Clone(); QuickSort(qs, 0, qs.Length - 1);
+        Console.WriteLine("3.5 QuickSort:     " + string.Join(", ", qs));
+
+        // 3.6 Sortowanie malejąco
+        // Złożoność: O(n log n)
+        int[] desc = (int[])sortArr.Clone(); SortujMalejaco(desc);
+        Console.WriteLine("3.6 Malejąco:      " + string.Join(", ", desc));
+
+        // 3.7 Bucket Sort (0–99)
+        // Złożoność: O(n + k)
+        int[] buck = { 42, 17, 99, 0, 55, 23 };
+        Console.WriteLine("3.7 BucketSort:    " + string.Join(", ", BucketSort(buck)));
+
+        // 3.8 Counting Sort
+        // Złożoność: O(n + k)
+        int[] cnt = { 4, 2, 2, 8, 3, 3, 1 };
+        Console.WriteLine("3.8 CountingSort:  " + string.Join(", ", CountingSort(cnt)));
+
+        // ── 4. WYSZUKIWANIE ───────────────────────────────────────────
+        Console.WriteLine("\n=== 4. WYSZUKIWANIE ===\n");
+        int[] sArr = { 2, 3, 4, 10, 40 };
+
+        // 4.1 Liniowe
+        // Złożoność: O(n)
+        Console.WriteLine("4.1 SzukanieLinarne(10): indeks=" + SzukanieLinarne(sArr, 10));
+
+        // 4.2 Binarne
+        // Złożoność: O(log n)
+        Console.WriteLine("4.2 SzukanieBinarne(10): indeks=" + SzukanieBinarne(sArr, 10));
+
+        // 4.3 Wszystkie indeksy
+        // Złożoność: O(n)
+        int[] dup = { 1, 3, 3, 5, 3, 7 };
+        Console.WriteLine("4.3 WszystkieIndeksy(3): " +
+            string.Join(", ", WszystkieIndeksy(dup, 3)));
+
+        // 4.4 Czy element istnieje
+        // Złożoność: O(n)
+        Console.WriteLine("4.4 CzyIstnieje(40): " + CzyIstnieje(sArr, 40));
+
+        // 4.5 Najbliższy większy
+        // Złożoność: O(log n)
+        Console.WriteLine("4.5 NajblizszyWiekszy(5): " + NajblizszyWiekszy(sArr, 5)); // 10
+
+        // ── 5. GRAFY ─────────────────────────────────────────────────
+        Console.WriteLine("\n=== 5. GRAFY / STRUKTURY DANYCH ===\n");
+
+        // 5.1 Reprezentacja grafu
+        int vertices = 5;
+        Graf graf = new Graf(vertices);
+        graf.DodajKrawedz(0, 1); graf.DodajKrawedz(0, 4);
+        graf.DodajKrawedz(1, 2); graf.DodajKrawedz(1, 3);
+        graf.DodajKrawedz(1, 4); graf.DodajKrawedz(2, 3);
+        graf.DodajKrawedz(3, 4);
+        Console.WriteLine("5.1 Macierz sąsiedztwa:");
+        graf.WypiszMacierz();
+        Console.WriteLine("    Lista sąsiedztwa:");
+        graf.WypiszListe();
+
+        // 5.2 DFS – O(V + E)
+        Console.Write("5.2 DFS od 0: ");
+        graf.DFS(0);
+        Console.WriteLine();
+
+        // 5.3 BFS – O(V + E)
+        Console.Write("5.3 BFS od 0: ");
+        graf.BFS(0);
+        Console.WriteLine();
+
+        // 5.4 Bellman-Ford – O(V * E)
+        Console.WriteLine("5.4 Bellman-Ford (najkrótsza ścieżka od 0):");
+        int[,] krawedzie = {
+            {0,1,4},{0,2,2},{1,2,3},{1,3,2},{1,4,3},{2,1,1},
+            {2,3,4},{2,4,5},{3,4,1}
+        };
+        BellmanFord(5, 0, krawedzie);
+
+        // ── 6. STRINGI / TEKST ───────────────────────────────────────
+        Console.WriteLine("\n=== 6. STRINGI / TEKST ===\n");
+        string testStr = "Hello World 123";
+
+        // 6.1 Samogłoski – O(n)
+        Console.WriteLine("6.1 LiczbaSamoglosek(\"Hello World\") = " + LiczbaSamoglosek("Hello World"));
+
+        // 6.2 Odwróć napis – O(n)
+        Console.WriteLine("6.2 OdwrocNapis(\"Hello\") = " + OdwrocNapis("Hello"));
+
+        // 6.3 Palindrom – O(n)
+        Console.WriteLine("6.3 CzyPalindrom(\"racecar\") = " + CzyPalindrom("racecar"));
+        Console.WriteLine("    CzyPalindrom(\"hello\")   = " + CzyPalindrom("hello"));
+
+        // 6.4 Najdłuższy wspólny prefiks – O(n*m)
+        Console.WriteLine("6.4 NajdluzszyPrefiks(\"flower\",\"flow\") = " +
+            NajdluzszyPrefiks("flower", "flow"));
+
+        // 6.5 Zlicz wystąpienia słów – O(n)
+        string tekst = "the cat sat on the mat the cat";
+        Console.WriteLine("6.5 ZliczSlowa(\"" + tekst + "\"):");
+        foreach (var kv in ZliczSlowa(tekst))
+            Console.WriteLine($"    '{kv.Key}' => {kv.Value}");
+
+        // 6.6 Usuń białe znaki – O(n)
+        Console.WriteLine("6.6 UsunBialeZnaki(\"  H e l l o  \") = \"" +
+            UsunBialeZnaki("  H e l l o  ") + "\"");
+
+        // 6.7 Wielkie/małe litery – O(n)
+        Console.WriteLine("6.7 NaWielkie: " + testStr.ToUpper());
+        Console.WriteLine("    NaMale:    " + testStr.ToLower());
+
+        // 6.8 Tylko cyfry – O(n)
+        Console.WriteLine("6.8 CzyTylkoCyfry(\"12345\") = " + CzyTylkoCyfry("12345"));
+        Console.WriteLine("    CzyTylkoCyfry(\"123a5\") = " + CzyTylkoCyfry("123a5"));
+
+        // 6.9 Liczby na słowa – O(n)
+        Console.WriteLine("6.9 LiczbyNaSlowa(\"I have 3 cats and 12 dogs\") = " +
+            LiczbyNaSlowa("I have 3 cats and 12 dogs"));
+
+        // 6.10 Znaki specjalne na podkreślenia – O(n)
+        Console.WriteLine("6.10 ZnamiNaPodkreslenie(\"hello@world!\") = " +
+            ZnakiNaPodkreslenie("hello@world!"));
+
+        // ── 7. REKURENCJA I KOMBINATORYKA ────────────────────────────
+        Console.WriteLine("\n=== 7. REKURENCJA I KOMBINATORYKA ===\n");
+
+        // 7.1 Fibonacci rekurencyjnie – O(2^n)
+        Console.WriteLine("7.1 FibRekurencja(10) = " + FibonacciRekurencja(10)); // 55
+
+        // 7.2 Silnia rekurencyjnie – O(n)
+        Console.WriteLine("7.2 SilniaRekurencja(6) = " + SilniaRekurencja(6));   // 720
+
+        // 7.3 Permutacje – O(n!)
+        Console.WriteLine("7.3 Permutacje({1,2,3}):");
+        Permutacje(new[] { 1, 2, 3 }, 0);
+
+        // 7.4 Podzbiory – O(2^n)
+        Console.WriteLine("\n7.4 Podzbiory({1,2,3}):");
+        GenerujPodzbiory(new[] { 1, 2, 3 }, 0, new List<int>());
+
+        // 7.5 Wieże Hanoi – O(2^n)
+        Console.WriteLine("\n7.5 Wieże Hanoi (n=3):");
+        WiezeHanoi(3, 'A', 'C', 'B');
+
+        Console.WriteLine("\nKoniec – naciśnij dowolny klawisz...");
+        Console.ReadKey();
+    }
+
+    // ================================================================
+    //  1. MATEMATYCZNE / LICZBY
+    // ================================================================
+
+    // 1.1 Silnia iteracyjna – O(n)
+    static long SilniaIteracja(int n)
+    {
+        long wynik = 1;
+        for (int i = 2; i <= n; i++) wynik *= i;
+        return wynik;
+    }
+
+    // 1.1 Silnia rekurencyjna – O(n)
+    static long SilniaRekurencja(int n)
+    {
+        if (n <= 1) return 1;
+        return n * SilniaRekurencja(n - 1);
+    }
+
+    // 1.2 NWD (algorytm Euklidesa) – O(log min(a,b))
+    static int NWD(int a, int b)
+    {
+        while (b != 0) { int t = b; b = a % b; a = t; }
+        return a;
+    }
+
+    // 1.3 NWW – O(log min(a,b))
+    static long NWW(int a, int b) => (long)a / NWD(a, b) * b;
+
+    // 1.4 Sprawdzenie liczby pierwszej – O(sqrt(n))
+    static bool CzyPierwsza(int n)
+    {
+        if (n < 2) return false;
+        for (int i = 2; i * i <= n; i++)
+            if (n % i == 0) return false;
+        return true;
+    }
+
+    // 1.5 Fibonacci iteracja – O(n)
+    static List<long> FibonacciIteracja(int n)
+    {
+        var wynik = new List<long>();
+        long a = 0, b = 1;
+        while (a <= n) { wynik.Add(a); long c = a + b; a = b; b = c; }
+        return wynik;
+    }
+
+    // 1.5 Fibonacci rekurencja – O(2^n)
+    static long FibonacciRekurencja(int n)
+    {
+        if (n <= 1) return n;
+        return FibonacciRekurencja(n - 1) + FibonacciRekurencja(n - 2);
+    }
+
+    // 1.6 Suma cyfr – O(log n)
+    static int SumaCyfr(int n)
+    {
+        n = Math.Abs(n);
+        int suma = 0;
+        while (n > 0) { suma += n % 10; n /= 10; }
+        return suma;
+    }
+
+    // 1.7 Suma parzystych od 1 do n – O(n)
+    static long SumaParzystych(int n)
+    {
+        long suma = 0;
+        for (int i = 2; i <= n; i += 2) suma += i;
+        return suma;
+    }
+
+    // 1.8 Liczba doskonała – O(n)
+    static bool CzyDoskonala(int n)
+    {
+        if (n < 2) return false;
+        int suma = 1;
+        for (int i = 2; i * i <= n; i++)
+            if (n % i == 0) { suma += i; if (i != n / i) suma += n / i; }
+        return suma == n;
+    }
+
+    // 1.9 Rozkład na czynniki pierwsze – O(sqrt(n))
+    static List<int> CzynnikIPierwsze(int n)
+    {
+        var wynik = new List<int>();
+        for (int d = 2; d * d <= n; d++)
+            while (n % d == 0) { wynik.Add(d); n /= d; }
+        if (n > 1) wynik.Add(n);
+        return wynik;
+    }
+    // alias dla spójności nazewnictwa w Main
+    static List<int> CzynnikPierwszy(int n) => CzynnikIPierwsze(n);
+    static List<int> CzynnikIPierwsze2(int n) => CzynnikIPierwsze(n);
+
+    static List<int> CzynnikiPierwsze(int n) => CzynnikIPierwsze(n);
+
+    // 1.10 Liczba Armstronga – O(d)
+    static bool CzyArmstrong(int n)
+    {
+        string s = n.ToString();
+        int d = s.Length;
+        int suma = s.Sum(c => (int)Math.Pow(c - '0', d));
+        return suma == n;
+    }
+
+    // ================================================================
+    //  2. TABLICE / WEKTORY
+    // ================================================================
+
+    // 2.1 Min i Max – O(n)
+    static (int min, int max) MinMax(int[] arr)
+    {
+        int min = arr[0], max = arr[0];
+        foreach (int x in arr) { if (x < min) min = x; if (x > max) max = x; }
+        return (min, max);
+    }
+
+    // 2.2 Suma – O(n)
+    static long SumaTablicy(int[] arr) { long s = 0; foreach (int x in arr) s += x; return s; }
+
+    // 2.3 Średnia – O(n)
+    static double SredniaTablicy(int[] arr) => arr.Length == 0 ? 0 : (double)SumaTablicy(arr) / arr.Length;
+
+    // 2.4 Odwróć – O(n)
+    static int[] OdwrocTablice(int[] arr)
+    {
+        for (int i = 0, j = arr.Length - 1; i < j; i++, j--)
+            (arr[i], arr[j]) = (arr[j], arr[i]);
+        return arr;
+    }
+
+    // 2.5 Liczba wystąpień – O(n)
+    static int LiczbaWystapien(int[] arr, int elem)
+    {
+        int count = 0;
+        foreach (int x in arr) if (x == elem) count++;
+        return count;
+    }
+
+    // 2.6 Obrót o k pozycji – O(n)
+    static int[] ObroTablice(int[] arr, int k, bool lewo)
+    {
+        int n = arr.Length; k = k % n;
+        if (!lewo) k = n - k;
+        int[] tmp = new int[n];
+        for (int i = 0; i < n; i++) tmp[i] = arr[(i + k) % n];
+        return tmp;
+    }
+
+    // 2.7 Monotoniczna – O(n)
+    static bool CzyMonotoniczna(int[] arr)
+    {
+        bool rosnaca = true, malejaca = true;
+        for (int i = 1; i < arr.Length; i++)
+        {
+            if (arr[i] < arr[i - 1]) rosnaca = false;
+            if (arr[i] > arr[i - 1]) malejaca = false;
+        }
+        return rosnaca || malejaca;
+    }
+
+    // 2.8 Zsumuj pary – O(n)
+    static int[] ZsumujPary(int[] arr)
+    {
+        int[] wynik = new int[arr.Length / 2];
+        for (int i = 0; i < wynik.Length; i++) wynik[i] = arr[2 * i] + arr[2 * i + 1];
+        return wynik;
+    }
+
+    // 2.9 Parzyste i nieparzyste – O(n)
+    static (int[] parzyste, int[] nieparzyste) WydzielParzyste(int[] arr)
+    {
+        var p = arr.Where(x => x % 2 == 0).ToArray();
+        var np = arr.Where(x => x % 2 != 0).ToArray();
+        return (p, np);
+    }
+
+    // 2.10a Powtórzenia O(n²)
+    static bool CzyMaPowtorzeniaN2(int[] arr)
+    {
+        for (int i = 0; i < arr.Length; i++)
+            for (int j = i + 1; j < arr.Length; j++)
+                if (arr[i] == arr[j]) return true;
+        return false;
+    }
+
+    // 2.10b Powtórzenia O(n) z HashSet
+    static bool CzyMaPowtorzeniaHashSet(int[] arr)
+    {
+        var seen = new HashSet<int>();
+        foreach (int x in arr) if (!seen.Add(x)) return true;
+        return false;
+    }
+
+    // ================================================================
+    //  3. SORTOWANIA
+    // ================================================================
+
+    // 3.1 Bubble Sort – Best: O(n), Worst: O(n²)
+    static void BubbleSort(int[] arr)
+    {
+        int n = arr.Length;
+        for (int i = 0; i < n - 1; i++)
+        {
+            bool swap = false;
+            for (int j = 0; j < n - i - 1; j++)
+                if (arr[j] > arr[j + 1]) { (arr[j], arr[j + 1]) = (arr[j + 1], arr[j]); swap = true; }
+            if (!swap) break; // optymistyczny: O(n)
+        }
+    }
+
+    // 3.2 Insertion Sort – Best: O(n), Worst: O(n²)
+    static void InsertionSort(int[] arr)
+    {
+        for (int i = 1; i < arr.Length; i++)
+        {
+            int key = arr[i], j = i - 1;
+            while (j >= 0 && arr[j] > key) { arr[j + 1] = arr[j]; j--; }
+            arr[j + 1] = key;
+        }
+    }
+
+    // 3.3 Selection Sort – Best/Worst: O(n²)
+    static void SelectionSort(int[] arr)
+    {
+        for (int i = 0; i < arr.Length - 1; i++)
+        {
+            int minIdx = i;
+            for (int j = i + 1; j < arr.Length; j++)
+                if (arr[j] < arr[minIdx]) minIdx = j;
+            (arr[i], arr[minIdx]) = (arr[minIdx], arr[i]);
+        }
+    }
+
+    // 3.4 Merge Sort – O(n log n) zawsze
+    static void MergeSort(int[] arr, int l, int r)
+    {
+        if (l >= r) return;
+        int m = (l + r) / 2;
+        MergeSort(arr, l, m);
+        MergeSort(arr, m + 1, r);
+        Merge(arr, l, m, r);
+    }
+    static void Merge(int[] arr, int l, int m, int r)
+    {
+        int[] L = arr[l..(m + 1)], R = arr[(m + 1)..(r + 1)];
+        int i = 0, j = 0, k = l;
+        while (i < L.Length && j < R.Length) arr[k++] = L[i] <= R[j] ? L[i++] : R[j++];
+        while (i < L.Length) arr[k++] = L[i++];
+        while (j < R.Length) arr[k++] = R[j++];
+    }
+
+    // 3.5 Quick Sort – Best/Avg: O(n log n), Worst: O(n²)
+    static void QuickSort(int[] arr, int l, int r)
+    {
+        if (l >= r) return;
+        int pivot = arr[r], i = l - 1;
+        for (int j = l; j < r; j++)
+            if (arr[j] <= pivot) { i++; (arr[i], arr[j]) = (arr[j], arr[i]); }
+        (arr[i + 1], arr[r]) = (arr[r], arr[i + 1]);
+        int p = i + 1;
+        QuickSort(arr, l, p - 1);
+        QuickSort(arr, p + 1, r);
+    }
+
+    // 3.6 Sortowanie malejąco (użycie Array.Sort + odwróć) – O(n log n)
+    static void SortujMalejaco(int[] arr)
+    {
+        Array.Sort(arr);
+        Array.Reverse(arr);
+    }
+
+    // 3.7 Bucket Sort dla 0–99 – O(n + k)
+    static int[] BucketSort(int[] arr)
+    {
+        int[] bucket = new int[100];
+        foreach (int x in arr) bucket[x]++;
+        var wynik = new List<int>();
+        for (int i = 0; i < 100; i++)
+            for (int c = 0; c < bucket[i]; c++) wynik.Add(i);
+        return wynik.ToArray();
+    }
+
+    // 3.8 Counting Sort – O(n + k)
+    static int[] CountingSort(int[] arr)
+    {
+        if (arr.Length == 0) return arr;
+        int max = arr.Max(), min = arr.Min();
+        int[] cnt = new int[max - min + 1];
+        foreach (int x in arr) cnt[x - min]++;
+        var wynik = new List<int>();
+        for (int i = 0; i < cnt.Length; i++)
+            for (int c = 0; c < cnt[i]; c++) wynik.Add(i + min);
+        return wynik.ToArray();
+    }
+
+    // ================================================================
+    //  4. WYSZUKIWANIE
+    // ================================================================
+
+    // 4.1 Liniowe – O(n)
+    static int SzukanieLinarne(int[] arr, int x)
+    {
+        for (int i = 0; i < arr.Length; i++) if (arr[i] == x) return i;
+        return -1;
+    }
+
+    // 4.2 Binarne (posortowana tablica) – O(log n)
+    static int SzukanieBinarne(int[] arr, int x)
+    {
+        int l = 0, r = arr.Length - 1;
+        while (l <= r)
+        {
+            int m = (l + r) / 2;
+            if (arr[m] == x) return m;
+            if (arr[m] < x) l = m + 1; else r = m - 1;
+        }
+        return -1;
+    }
+
+    // 4.3 Wszystkie indeksy – O(n)
+    static List<int> WszystkieIndeksy(int[] arr, int x)
+    {
+        var idx = new List<int>();
+        for (int i = 0; i < arr.Length; i++) if (arr[i] == x) idx.Add(i);
+        return idx;
+    }
+
+    // 4.4 Czy istnieje – O(n)
+    static bool CzyIstnieje(int[] arr, int x)
+    {
+        foreach (int a in arr) if (a == x) return true;
+        return false;
+    }
+
+    // 4.5 Najbliższy większy w posortowanej tablicy – O(log n)
+    static int NajblizszyWiekszy(int[] arr, int x)
+    {
+        int l = 0, r = arr.Length - 1, wynik = -1;
+        while (l <= r)
+        {
+            int m = (l + r) / 2;
+            if (arr[m] > x) { wynik = arr[m]; r = m - 1; }
+            else l = m + 1;
+        }
+        return wynik;
+    }
+
+    // ================================================================
+    //  5. GRAFY / STRUKTURY DANYCH
+    // ================================================================
+
+    class Graf
+    {
+        private int V;
+        private int[,] macierz;
+        private List<int>[] lista;
+
+        public Graf(int v)
+        {
+            V = v;
+            macierz = new int[v, v];
+            lista = new List<int>[v];
+            for (int i = 0; i < v; i++) lista[i] = new List<int>();
+        }
+
+        public void DodajKrawedz(int u, int w)
+        {
+            macierz[u, w] = macierz[w, u] = 1;
+            lista[u].Add(w);
+            lista[w].Add(u);
+        }
+
+        public void WypiszMacierz()
+        {
+            for (int i = 0; i < V; i++)
+            {
+                Console.Write("    ");
+                for (int j = 0; j < V; j++) Console.Write(macierz[i, j] + " ");
+                Console.WriteLine();
+            }
+        }
+
+        public void WypiszListe()
+        {
+            for (int i = 0; i < V; i++)
+                Console.WriteLine($"    {i}: " + string.Join(" -> ", lista[i]));
+        }
+
+        // 5.2 DFS – O(V + E)
+        public void DFS(int start)
+        {
+            bool[] visited = new bool[V];
+            DFSRek(start, visited);
+        }
+        private void DFSRek(int v, bool[] visited)
+        {
+            visited[v] = true;
+            Console.Write(v + " ");
+            foreach (int n in lista[v])
+                if (!visited[n]) DFSRek(n, visited);
+        }
+
+        // 5.3 BFS – O(V + E)
+        public void BFS(int start)
+        {
+            bool[] visited = new bool[V];
+            var kolejka = new Queue<int>();
+            visited[start] = true;
+            kolejka.Enqueue(start);
+            while (kolejka.Count > 0)
+            {
+                int v = kolejka.Dequeue();
+                Console.Write(v + " ");
+                foreach (int n in lista[v])
+                    if (!visited[n]) { visited[n] = true; kolejka.Enqueue(n); }
+            }
+        }
+    }
+
+    // 5.4 Bellman-Ford – O(V * E)
+    static void BellmanFord(int V, int src, int[,] edges)
+    {
+        int E = edges.GetLength(0);
+        int[] dist = Enumerable.Repeat(int.MaxValue, V).ToArray();
+        dist[src] = 0;
+
+        for (int i = 1; i < V; i++)
+            for (int j = 0; j < E; j++)
+            {
+                int u = edges[j, 0], v = edges[j, 1], w = edges[j, 2];
+                if (dist[u] != int.MaxValue && dist[u] + w < dist[v])
+                    dist[v] = dist[u] + w;
+            }
+
+        // Sprawdzenie ujemnego cyklu
+        for (int j = 0; j < E; j++)
+        {
+            int u = edges[j, 0], v = edges[j, 1], w = edges[j, 2];
+            if (dist[u] != int.MaxValue && dist[u] + w < dist[v])
+            { Console.WriteLine("    Graf zawiera ujemny cykl!"); return; }
+        }
+
+        for (int i = 0; i < V; i++)
+            Console.WriteLine($"    {src} -> {i}: " + (dist[i] == int.MaxValue ? "∞" : dist[i].ToString()));
+    }
+
+    // ================================================================
+    //  6. STRINGI / TEKST
+    // ================================================================
+
+    // 6.1 Samogłoski – O(n)
+    static int LiczbaSamoglosek(string s)
+    {
+        return s.Count(c => "aeiouAEIOU".Contains(c));
+    }
+
+    // 6.2 Odwróć napis – O(n)
+    static string OdwrocNapis(string s) => new string(s.Reverse().ToArray());
+
+    // 6.3 Palindrom – O(n)
+    static bool CzyPalindrom(string s)
+    {
+        s = s.ToLower();
+        int l = 0, r = s.Length - 1;
+        while (l < r) { if (s[l++] != s[r--]) return false; }
+        return true;
+    }
+
+    // 6.4 Najdłuższy wspólny prefiks – O(n*m)
+    static string NajdluzszyPrefiks(string a, string b)
+    {
+        int i = 0;
+        while (i < a.Length && i < b.Length && a[i] == b[i]) i++;
+        return a[..i];
+    }
+
+    // 6.5 Zlicz słowa – O(n)
+    static Dictionary<string, int> ZliczSlowa(string tekst)
+    {
+        var dict = new Dictionary<string, int>();
+        foreach (string w in tekst.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+        {
+            string kl = w.ToLower();
+            dict[kl] = dict.GetValueOrDefault(kl) + 1;
+        }
+        return dict;
+    }
+
+    // 6.6 Usuń białe znaki – O(n)
+    static string UsunBialeZnaki(string s) => new string(s.Where(c => !char.IsWhiteSpace(c)).ToArray());
+
+    // 6.7 Wielkie/małe – wbudowane ToUpper/ToLower
+
+    // 6.8 Tylko cyfry – O(n)
+    static bool CzyTylkoCyfry(string s) => s.Length > 0 && s.All(char.IsDigit);
+
+    // 6.9 Liczby na słowa – O(n)
+    static string LiczbyNaSlowa(string s)
+    {
+        string[] jednosci = { "", "jeden", "dwa", "trzy", "cztery", "pięć",
+                               "sześć", "siedem", "osiem", "dziewięć",
+                               "dziesięć", "jedenaście", "dwanaście" };
+        return Regex.Replace(s, @"\d+", m =>
+        {
+            int n = int.Parse(m.Value);
+            return n < jednosci.Length ? jednosci[n] : m.Value;
+        });
+    }
+
+    // 6.10 Znaki specjalne na podkreślenia – O(n)
+    static string ZnakiNaPodkreslenie(string s)
+        => Regex.Replace(s, @"[^a-zA-Z0-9]", "_");
+
+    // ================================================================
+    //  7. REKURENCJA I KOMBINATORYKA
+    // ================================================================
+
+    // 7.1 Fibonacci rekurencyjnie – O(2^n)
+    // (już zdefiniowane jako FibonacciRekurencja powyżej)
+
+    // 7.2 Silnia rekurencyjnie – O(n)
+    // (już zdefiniowane jako SilniaRekurencja powyżej)
+
+    // 7.3 Permutacje – O(n!)
+    static void Permutacje(int[] arr, int start)
+    {
+        if (start == arr.Length - 1)
+        { Console.WriteLine("    " + string.Join(", ", arr)); return; }
+        for (int i = start; i < arr.Length; i++)
+        {
+            (arr[start], arr[i]) = (arr[i], arr[start]);
+            Permutacje(arr, start + 1);
+            (arr[start], arr[i]) = (arr[i], arr[start]);
+        }
+    }
+
+    // 7.4 Podzbiory – O(2^n)
+    static void GenerujPodzbiory(int[] arr, int idx, List<int> obecny)
+    {
+        Console.WriteLine("    {" + string.Join(", ", obecny) + "}");
+        for (int i = idx; i < arr.Length; i++)
+        {
+            obecny.Add(arr[i]);
+            GenerujPodzbiory(arr, i + 1, obecny);
+            obecny.RemoveAt(obecny.Count - 1);
+        }
+    }
+
+    // 7.5 Wieże Hanoi – O(2^n)
+    static void WiezeHanoi(int n, char skad, char dokad, char pomocniczy)
+    {
+        if (n == 1) { Console.WriteLine($"    Przesuń krążek 1 z {skad} na {dokad}"); return; }
+        WiezeHanoi(n - 1, skad, pomocniczy, dokad);
+        Console.WriteLine($"    Przesuń krążek {n} z {skad} na {dokad}");
+        WiezeHanoi(n - 1, pomocniczy, dokad, skad);
+    }
+}
+
+/*
+ * =====================================================================
+ *  TABELA ZŁOŻONOŚCI OBLICZENIOWEJ
+ * =====================================================================
+ *
+ *  KATEGORIA 1 – MATEMATYCZNE
+ *  ┌─────────────────────────────────┬──────────────┐
+ *  │ Algorytm                        │ Złożoność    │
+ *  ├─────────────────────────────────┼──────────────┤
+ *  │ Silnia                          │ O(n)         │
+ *  │ NWD (Euklides)                  │ O(log min)   │
+ *  │ NWW                             │ O(log min)   │
+ *  │ Liczba pierwsza                 │ O(sqrt n)    │
+ *  │ Fibonacci iteracja              │ O(n)         │
+ *  │ Fibonacci rekurencja            │ O(2^n)       │
+ *  │ Suma cyfr                       │ O(log n)     │
+ *  │ Suma parzystych                 │ O(n)         │
+ *  │ Liczba doskonała                │ O(n)         │
+ *  │ Czynniki pierwsze               │ O(sqrt n)    │
+ *  │ Armstrong                       │ O(d)         │
+ *  └─────────────────────────────────┴──────────────┘
+ *
+ *  KATEGORIA 2 – TABLICE
+ *  Większość operacji: O(n)
+ *  Powtórzenia (brute-force): O(n²)
+ *  Powtórzenia (HashSet):     O(n)
+ *
+ *  KATEGORIA 3 – SORTOWANIA
+ *  ┌──────────────────┬───────────────┬──────────────┐
+ *  │ Algorytm         │ Optymistyczny │ Pesymistyczny│
+ *  ├──────────────────┼───────────────┼──────────────┤
+ *  │ Bubble Sort      │ O(n)          │ O(n²)        │
+ *  │ Insertion Sort   │ O(n)          │ O(n²)        │
+ *  │ Selection Sort   │ O(n²)         │ O(n²)        │
+ *  │ Merge Sort       │ O(n log n)    │ O(n log n)   │
+ *  │ Quick Sort       │ O(n log n)    │ O(n²)        │
+ *  │ Bucket Sort      │ O(n + k)      │ O(n²)        │
+ *  │ Counting Sort    │ O(n + k)      │ O(n + k)     │
+ *  └──────────────────┴───────────────┴──────────────┘
+ *
+ *  KATEGORIA 4 – WYSZUKIWANIE
+ *  Liniowe:  O(n)
+ *  Binarne:  O(log n)
+ *
+ *  KATEGORIA 5 – GRAFY
+ *  DFS / BFS:      O(V + E)
+ *  Bellman-Ford:   O(V * E)
+ *
+ *  KATEGORIA 6 – STRINGI: O(n)
+ *
+ *  KATEGORIA 7 – REKURENCJA
+ *  Permutacje:  O(n!)
+ *  Podzbiory:   O(2^n)
+ *  Hanoi:       O(2^n)
+ * =====================================================================
+ */
